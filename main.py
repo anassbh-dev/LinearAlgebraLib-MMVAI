@@ -101,11 +101,11 @@ def dot_product(a, b):
             # Initialize the result tensor with the appropriate dimensions
         result = [[[0 for _ in range(len(b[0][0]))] for _ in range(len(a[0]))] for _ in range(len(a))]
 
-        for i in range(len(a)):              # Iterate over the first dimension of tensor a
-            for j in range(len(a[0])):      # Iterate over the second dimension (matrix rows) of tensor a
-                for k in range(len(b[0][0])):         # Iterate over the third dimension (matrix columns) of tensor b
-                    for l in range(len(b)):     # Iterate over the first dimension (matrices) of tensor b
-                        for m in range(len(b[0])):      # Iterate over the second dimension (matrix rows) of tensor b
+        for i in range(len(a)):  # Iterate over the first dimension of tensor a
+            for j in range(len(a[0])):  # Iterate over the second dimension (matrix rows) of tensor a
+                for k in range(len(b[0][0])):  # Iterate over the third dimension (matrix columns) of tensor b
+                    for l in range(len(b)):  # Iterate over the first dimension (matrices) of tensor b
+                        for m in range(len(b[0])):  # Iterate over the second dimension (matrix rows) of tensor b
                             # Perform element-wise multiplication and sum for the dot product
                             result[i][j][k] += a[i][j][l] * b[l][m][k]
         return result

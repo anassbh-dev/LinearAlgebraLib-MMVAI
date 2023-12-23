@@ -5,9 +5,9 @@ class MyRandom:
         # Set the initial seed value for the random number generator
         self.seed = seed
         # Constants used for the generator algorithm
-        self.a = 156
-        self.b = 108
-        self.c = 847
+        self.a = 15
+        self.b = 18
+        self.c = 47
 
     def rand(self):    # Method to generate a pseudo-random number
         # Update the seed and ensure the result is an integer
@@ -113,16 +113,6 @@ def dot_product(a, b):
 def inner_product(a, b):
     return dot_product(a,b)
 
-# Example usage:
-rnd = MyRandom()
-a = rnd.random(4,2)
-b = rnd.random(2,4)
-c = inner_product(a,b)
-
-print(a)
-print(b)
-print(c)
-
 def outer_product(a, b):
     # Check if both inputs are lists
     if not isinstance(a, list) or not isinstance(b, list):
@@ -142,8 +132,12 @@ def outer_product(a, b):
             result[i].append(a[i] * b[j])
     return result
 
-#u = [1, 3]
-#v = [-1, 1]
+# Example usage:
+rnd = MyRandom()
+a = rnd.random(2,2,2)
+b = rnd.random(2,2,2)
+c = dot_product(a,b)
 
-#r = outer_product(u,v)
-#print(v)
+print('a = ',a)
+print('b = ',b)
+print('c = ',c)

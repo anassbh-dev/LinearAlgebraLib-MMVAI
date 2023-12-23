@@ -239,21 +239,42 @@ def norm(a):
         # Compute the norm for vectors
         return sum(x * x for x in a) ** 0.5
 
+def multiplicative_inverse(a):
+    # Check if the matrix is square
+    n = len(a)
+    if any(len(row) != n for row in a):
+        raise ValueError("Matrix must be square.")
+    # Initialize the augmented matrix with the identity matrix
+    aug_matrix = [row[:] + [0 if i != j else 1 for j in range(n)] for i, row in enumerate(a)]
+    # Perform Gaussian elimination
+    for i in range(n):
+        # Find the pivot (largest element in the current column)
+        pivot_row = max(range(i, n), key=lambda r: abs(aug_matrix[r][i]))
+        if aug_matrix[pivot_row][i] == 0:
+            raise ValueError("Matrix is singular and cannot be inverted.")
+        # Swap the pivot row with the current row
+        aug_matrix[i], aug_matrix[pivot_row] = aug_matrix[pivot_row], aug_matrix[i]
+        # Normalize the pivot row
+        pivot = aug_matrix[i][i]
+        aug_matrix[i] = [x / pivot for x in aug_matrix[i]]
+        # Eliminate the current column elements in other rows
+        for j in range(n):
+            if i != j:
+                ratio = aug_matrix[j][i]
+                aug_matrix[j] = [aug_matrix[j][k] - ratio * aug_matrix[i][k] for k in range(2 * n)]
+    # Extract the inverse matrix from the augmented matrix
+    result = [row[n:] for row in aug_matrix]
+    return result
 
 # Example usage:
 rnd = MyRandom()
 a = rnd.random(2,2)
-b = rnd.random(3)
-n_a = norm(a)
-n_b = norm(b)
+inv_a = multiplicative_inverse(a)
 import numpy as np
-n2_a = np.linalg.norm(a)
-n2_b = np.linalg.norm(b)
+inv2_a = np.linalg.inv(a)
 print('a = ',a)
-print('b = ',b)
-print('n_a = ',n_a)
-print('n_b = ',n_b)
-print('n2_a = ',n2_a)
-print('n2_b = ',n2_b)
+print('inv_a = ',inv_a)
+print('inv2_a = ',inv2_a)
+
 
 

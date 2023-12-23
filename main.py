@@ -1,29 +1,39 @@
 import time
 
+class MyRandom:
+    def __init__(self, seed=time.time()):    # Initializer or constructor for the MyRandom class
+        # Set the initial seed value for the random number generator
+        self.seed = seed
+        # Constants used for the generator algorithm
+        self.a = 156
+        self.b = 108
+        self.c = 847
 
-def __init__(self, seed = time.time()):
-    self.seed = seed
-    self.a = 156
-    self.b = 108
-    self.c = 847
-
- def rand(self):
-        self.seed = (self.a * self.seed + self.b) % self.c
+    def rand(self):    # Method to generate a pseudo-random number
+        # Update the seed and ensure the result is an integer
+        self.seed = int((self.a * self.seed + self.b) % self.c)
+        # Return the new pseudo-random number
         return self.seed
 
-def random(self, *args):
-    if len(args) == 0:
-        raise ValueError("At least one dimension size is required")
+    def random(self, *args):   # Method to generate a multi-dimensional array filled with random numbers
+        # If no dimensions are provided, raise an error
+        if len(args) == 0:
+            raise ValueError("At least one dimension size is required")
+        # Call the generate_array method with the provided dimensions
+        return self.generate_array(args)
 
-    def generate_array(dimensions, depth=0):
+    def generate_array(self, dimensions, depth=0):    # Recursive method to generate an array of given dimensions
+        # If the current depth equals the number of dimensions, return a random number
         if depth == len(dimensions):
             return self.rand()
+        # Otherwise, build the next dimension recursively
+        return [self.generate_array(dimensions, depth + 1) for _ in range(dimensions[depth])]
 
-        return [generate_array(dimensions, depth + 1) for _ in range(dimensions[depth])]
-
-    return generate_array(args)
-
-
+# Usage:
+# rnd = MyRandom()  # Create an instance of MyRandom
+# vector = rnd.random(3)  # Generate a 1D array (vector) with 3 random numbers
+# matrix = rnd.random(3, 2)  # Generate a 2D array (matrix) with 3x2 random numbers
+# tensor = rnd.random(3, 2, 4)  # Generate a 3D array (tensor) with 3x2x4 random numbers
 
 def dot_product(a, b):
 
@@ -38,7 +48,7 @@ def dot_product(a, b):
 
     # Check if input cases are matrix (2D arrays)
     elif isinstance(a, list) and isinstance(b, list) and all(isinstance(row, list) for row in a) and all(
-            isinstance(row, list) for row in b):
+            isinstance(row, list) for row in b) and not any(isinstance(sub, list) for row in a for sub in row) and not any(isinstance(sub, list) for row in b for sub in row):
         if len(a[0]) != len(b):
             raise ValueError("Matrix 1's columns must be equal to Matrix 2's rows for dot product.")
         result = []
@@ -100,12 +110,11 @@ def dot_product(a, b):
                             result[i][j][k] += a[i][j][l] * b[l][m][k]
         return result
 
-# Create a random matrix with 3 rows and 2 columns
-a = random(3,2)
-b = random(2,3)
-aa = a.get_matrix()
-bb = b.get_matrix()
-c = dot_product(aa,bb)
+# Example usage:
+rnd = MyRandom()
+a = rnd.random(2,2,2)
+b = rnd.random(2,2,2)
+c = dot_product(a,b)
 
 print(a)
 print(b)
@@ -133,8 +142,8 @@ def outer_product(a, b):
             result[i].append(a[i] * b[j])
     return result
 
-u = [1, 3]
-v = [-1, 1]
+#u = [1, 3]
+#v = [-1, 1]
 
-r = outer_product(u,v)
-print(v)
+#r = outer_product(u,v)
+#print(v)

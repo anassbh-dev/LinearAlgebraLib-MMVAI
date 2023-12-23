@@ -1,4 +1,4 @@
-def dot_product_tensors(tensor1, tensor2):
+def dot_product_tensors(tensor1, tensor2, cols1=None):
     if not all(isinstance(row, list) for row in tensor1) or not all(isinstance(row, list) for row in tensor2):
         raise ValueError("Invalid input tensors")
 

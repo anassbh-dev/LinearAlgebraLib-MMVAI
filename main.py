@@ -158,14 +158,46 @@ def tensor_dot_product_along_axes(tensor1, tensor2, axis1, axis2):
 
     return result
 
+def matrix_power(matrix, n):
+    # Check if the input matrix is square
+    if any(len(row) != len(matrix) for row in matrix):
+        raise ValueError("Input must be a square matrix.")
+    # Initialize the result as the identity matrix of the same size
+    result = [[1 if i == j else 0 for j in range(len(matrix))] for i in range(len(matrix))]
+    # Early exit if the power is 0, result is identity matrix
+    if n == 0:
+        return result
+    # Early exit if the power is 1, result is the matrix itself
+    if n == 1:
+        return matrix
+    # Initialize a temporary variable to hold the matrix
+    temp_matrix = matrix
+    # Multiply the matrix by itself 'power' times
+    for _ in range(n - 1):  # power - 1 because we start with matrix itself
+        # Prepare a new result matrix for this iteration
+        new_result = [[0 for _ in range(len(matrix))] for _ in range(len(matrix))]
+        # Perform matrix multiplication
+        for i in range(len(matrix)):
+            for j in range(len(matrix)):
+                for k in range(len(matrix)):
+                    new_result[i][j] += result[i][k] * temp_matrix[k][j]
+        # Update the result matrix with the new result
+        result = new_result
+    return result
+
+
+# Example usage:
+mat = [[2, 1], [1, 2]]
+power = 3  # Raise the matrix to the 3rd power
+result = matrix_power(mat, power)
+print(result)
+
 # Example usage:
 rnd = MyRandom()
-a = rnd.random(2,2,2)
-b = rnd.random(2,2,2)
-axis_a = 1  # Contract over the last axis of 'a'
-axis_b = 0  # Contract over the first axis of 'b'
-c = tensor_dot_product_along_axes(a,b,axis_a,axis_b)
+a = rnd.random(2,2)
+n = rnd.random(1)[0]
+b = matrix_power(a,n)
 
 print('a = ',a)
+print('n = ',n)
 print('b = ',b)
-print('c = ',c)

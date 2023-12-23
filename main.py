@@ -132,11 +132,39 @@ def outer_product(a, b):
             result[i].append(a[i] * b[j])
     return result
 
+
+def tensor_dot_product_along_axes(tensor1, tensor2, axis1, axis2):
+    # Check if the dimensions are correct for dot product along specified axes
+    if len(tensor1[0][0]) != len(tensor2):
+        raise ValueError("Dimensions do not match for the specified axes.")
+
+    # Calculate the size of the resulting tensor
+    result_dims = [len(tensor1), len(tensor1[0]), len(tensor2[0][0])]
+    result_dims[axis1] = len(tensor2[0])
+    result_dims[axis2] = len(tensor1[axis1])
+
+    # Initialize the resulting tensor
+    result = [[[0 for _ in range(result_dims[2])] for _ in range(result_dims[1])] for _ in range(result_dims[0])]
+
+    # Compute the dot product along the specified axes
+    for i in range(len(result)):
+        for j in range(len(result[0])):
+            for k in range(len(result[0][0])):
+                # Initialize the sum for this element
+                dot_product_sum = 0
+                for l in range(len(tensor1[0][0])):
+                    dot_product_sum += tensor1[i][j][l] * tensor2[l][j][k]
+                result[i][j][k] = dot_product_sum
+
+    return result
+
 # Example usage:
 rnd = MyRandom()
 a = rnd.random(2,2,2)
 b = rnd.random(2,2,2)
-c = dot_product(a,b)
+axis_a = 1  # Contract over the last axis of 'a'
+axis_b = 0  # Contract over the first axis of 'b'
+c = tensor_dot_product_along_axes(a,b,axis_a,axis_b)
 
 print('a = ',a)
 print('b = ',b)

@@ -266,15 +266,25 @@ def multiplicative_inverse(a):
     result = [row[n:] for row in aug_matrix]
     return result
 
+def condition_number(a):
+    # Compute the norm of the matrix
+    norm_matrix = norm(a)
+    # Compute the inverse of the matrix
+    inv_matrix = multiplicative_inverse(a)
+    # Compute the norm of the inverse matrix
+    norm_inv_matrix = norm(inv_matrix)
+    # Compute the condition number
+    result = norm_matrix * norm_inv_matrix
+    return result
+
 # Example usage:
 rnd = MyRandom()
-a = rnd.random(2,2)
-inv_a = multiplicative_inverse(a)
+a = rnd.random(3,3)
+cond_num = condition_number(a)
 import numpy as np
-inv2_a = np.linalg.inv(a)
+cond_num2 = np.linalg.cond(a, 'fro')
 print('a = ',a)
-print('inv_a = ',inv_a)
-print('inv2_a = ',inv2_a)
-
+print("cond_num = ", cond_num)
+print("cond_num2 = ", cond_num2)
 
 

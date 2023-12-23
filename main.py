@@ -201,3 +201,36 @@ b = matrix_power(a,n)
 print('a = ',a)
 print('n = ',n)
 print('b = ',b)
+
+
+def kronecker_product(a, B):
+    # Determine the size of the new matrix
+    a_rows, a_cols = len(a), len(a[0])
+    b_rows, b_cols = len(b), len(b[0])
+    result_rows, result_cols = a_rows * b_rows, a_cols * b_cols
+    # Create the result matrix filled with zeros
+    result = [[0] * result_cols for _ in range(result_rows)]
+    # Compute the Kronecker product
+    for a_row in range(a_rows):
+        for a_col in range(a_cols):
+            # Get current element from matrix a
+            a_elem = a[a_row][a_col]
+            for b_row in range(b_rows):
+                for b_col in range(b_cols):
+                    # Compute the corresponding indices in the result matrix
+                    res_row = a_row * b_rows + b_row
+                    res_col = a_col * b_cols + b_col
+                    # Multiply the element from a with the element from b and assign it to the result
+                    result[res_row][res_col] = a_elem * b[b_row][b_col]
+
+    return result
+
+# Example usage:
+rnd = MyRandom()
+a = rnd.random(2,2)
+b = rnd.random(3,2)
+c = kronecker_product(a,b)
+
+print('a = ',a)
+print('b = ',b)
+print('c = ',c)

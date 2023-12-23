@@ -226,14 +226,34 @@ def cholesky_decomposition(a):
                 result[i][j] = (1/result[j][j]*(a[i][j]-temp_sum))
     return result
 
+def norm(a):
+    # Check if a is a vector or a matrix
+    if isinstance(a[0], list):  # Assume it's a matrix if the first element is a list
+        # Compute the norm for matrix
+        sum_squares = 0
+        for row in a:
+            for element in row:
+                sum_squares += element * element
+        return sum_squares ** 0.5
+    else:
+        # Compute the norm for vectors
+        return sum(x * x for x in a) ** 0.5
+
 
 # Example usage:
 rnd = MyRandom()
 a = rnd.random(2,2)
-L = cholesky_decomposition(a)
+b = rnd.random(3)
+n_a = norm(a)
+n_b = norm(b)
 import numpy as np
+n2_a = np.linalg.norm(a)
+n2_b = np.linalg.norm(b)
 print('a = ',a)
-L2 = np.linalg.cholesky(a)
-print("L = ",L)
-print("L2 = ",L2)
+print('b = ',b)
+print('n_a = ',n_a)
+print('n_b = ',n_b)
+print('n2_a = ',n2_a)
+print('n2_b = ',n2_b)
+
 

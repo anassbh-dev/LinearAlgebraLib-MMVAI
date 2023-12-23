@@ -185,25 +185,7 @@ def matrix_power(matrix, n):
         result = new_result
     return result
 
-
-# Example usage:
-mat = [[2, 1], [1, 2]]
-power = 3  # Raise the matrix to the 3rd power
-result = matrix_power(mat, power)
-print(result)
-
-# Example usage:
-rnd = MyRandom()
-a = rnd.random(2,2)
-n = rnd.random(1)[0]
-b = matrix_power(a,n)
-
-print('a = ',a)
-print('n = ',n)
-print('b = ',b)
-
-
-def kronecker_product(a, B):
+def kronecker_product(a, b):
     # Determine the size of the new matrix
     a_rows, a_cols = len(a), len(a[0])
     b_rows, b_cols = len(b), len(b[0])
@@ -225,12 +207,33 @@ def kronecker_product(a, B):
 
     return result
 
+def cholesky_decomposition(a):
+    # Check if the input matrix is square
+    n = len(a)
+    if any(len(row) != n for row in a):
+        raise ValueError("Input matrix must be square.")
+    # Initialize the result matrix with zeros
+    result = [[0.0] * n for _ in range(n)]
+    # Perform the Cholesky decomposition
+    for i in range(n):
+        for j in range(i + 1):
+            temp_sum = sum(result[i][k] * result[j][k] for k in range(j))
+            if i == j:  # Diagonal elements
+                # The matrix must be positive definite for this to be real
+                result[i][j] = (a[i][i] - temp_sum) ** 0.5
+            else:
+                # Off-diagonal elements
+                result[i][j] = (1/result[j][j]*(a[i][j]-temp_sum))
+    return result
+
+
 # Example usage:
 rnd = MyRandom()
 a = rnd.random(2,2)
-b = rnd.random(3,2)
-c = kronecker_product(a,b)
-
+L = cholesky_decomposition(a)
+import numpy as np
 print('a = ',a)
-print('b = ',b)
-print('c = ',c)
+L2 = np.linalg.cholesky(a)
+print("L = ",L)
+print("L2 = ",L2)
+

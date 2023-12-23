@@ -1,0 +1,140 @@
+import time
+
+
+def __init__(self, seed = time.time()):
+    self.seed = seed
+    self.a = 156
+    self.b = 108
+    self.c = 847
+
+ def rand(self):
+        self.seed = (self.a * self.seed + self.b) % self.c
+        return self.seed
+
+def random(self, *args):
+    if len(args) == 0:
+        raise ValueError("At least one dimension size is required")
+
+    def generate_array(dimensions, depth=0):
+        if depth == len(dimensions):
+            return self.rand()
+
+        return [generate_array(dimensions, depth + 1) for _ in range(dimensions[depth])]
+
+    return generate_array(args)
+
+
+
+def dot_product(a, b):
+
+    # Check if input cases are vectors (1D arrays)
+    if isinstance(a, list) and isinstance(b, list) and not all(isinstance(row, list) for row in a) and not all(
+            isinstance(row, list) for row in b):
+        if len(a) != len(b):
+            raise ValueError("Arrays must have the same length for dot product.")
+        # Calculate dot product of vectors (1D arrays)
+        result = int(sum(x * y for x, y in zip(a, b)))
+        return result
+
+    # Check if input cases are matrix (2D arrays)
+    elif isinstance(a, list) and isinstance(b, list) and all(isinstance(row, list) for row in a) and all(
+            isinstance(row, list) for row in b):
+        if len(a[0]) != len(b):
+            raise ValueError("Matrix 1's columns must be equal to Matrix 2's rows for dot product.")
+        result = []
+        for i in range(len(a)):              # Iterate over rows of matrix 1 (a)
+            row = []
+            for j in range(len(b[0])):       # Iterate over columns of matrix 2 (b)
+                element = 0
+                for k in range(len(b)):
+                    element += a[i][k] * b[k][j]
+                row.append(element)
+            result.append(row)
+        return result
+
+    # Check if input cases are matrix * vector (2D array * 1D array)
+    elif isinstance(a, list) and isinstance(b, list) and all(isinstance(row, list) for row in a) and not all(
+            isinstance(row, list) for row in b):
+        if len(a[0]) != len(b):
+            raise ValueError("Matrix's columns must be equal to vector's length for dot product.")
+        result = []
+        for i in range(len(a)):                  # Iterate over columns of matrix (a)
+            element = 0
+            for j in range(len(b)):               # Iterate over elements of vector (b)
+                element += a[i][j] * b[j]
+            result.append(element)
+        return result
+
+    # Check if input cases are vector * matrix (1D array * 2D array)
+    elif isinstance(a, list) and isinstance(b, list) and not all(isinstance(row, list) for row in a) and all(
+                isinstance(row, list) for row in b):
+        if len(a) != len(b):
+            raise ValueError("Vector's length must be equal to matrix's number of rows for dot product.")
+        result = []
+        for i in range(len(b[0])):            # Iterate over columns of matrix b
+            element = 0
+            for j in range(len(a)):           # Iterate over elements of vector a
+                element += a[j] * b[j][i]
+            result.append(element)
+        return result
+
+    # Check if input cases are tensors (3D arrays)
+    elif (isinstance(a, list) and isinstance(b, list) and
+          all(isinstance(matrix, list) for matrix in a) and
+          all(isinstance(row, list) for matrix in a for row in matrix) and
+          all(isinstance(matrix, list) for matrix in b) and
+          all(isinstance(row, list) for matrix in b for row in matrix)):
+        # Validate dimensions of the 2 tensors
+        if len(a) != len(b) or any(len(a[i]) != len(b[i]) for i in range(len(a))) or any(
+                len(a[i][j]) != len(b[i][j]) for i in range(len(a)) for j in range(len(a[i]))):
+            raise ValueError("Tensors must have the same dimensions for dot product.")
+            # Initialize the result tensor with the appropriate dimensions
+        result = [[[0 for _ in range(len(b[0][0]))] for _ in range(len(a[0]))] for _ in range(len(a))]
+
+        for i in range(len(a)):              # Iterate over the first dimension of tensor a
+            for j in range(len(a[0])):      # Iterate over the second dimension (matrix rows) of tensor a
+                for k in range(len(b[0][0])):         # Iterate over the third dimension (matrix columns) of tensor b
+                    for l in range(len(b)):     # Iterate over the first dimension (matrices) of tensor b
+                        for m in range(len(b[0])):      # Iterate over the second dimension (matrix rows) of tensor b
+                            # Perform element-wise multiplication and sum for the dot product
+                            result[i][j][k] += a[i][j][l] * b[l][m][k]
+        return result
+
+# Create a random matrix with 3 rows and 2 columns
+a = random(3,2)
+b = random(2,3)
+aa = a.get_matrix()
+bb = b.get_matrix()
+c = dot_product(aa,bb)
+
+print(a)
+print(b)
+print(c)
+def inner_product(a, b):
+    return
+
+
+def outer_product(a, b):
+    # Check if both inputs are lists
+    if not isinstance(a, list) or not isinstance(b, list):
+        raise ValueError("Both inputs must be lists.")
+
+    # Check if both inputs are 1D lists
+    if any(isinstance(element, list) for element in a) or any(isinstance(element, list) for element in b):
+        raise ValueError("One of the inputs is not a 1D list.")
+
+    # Initialize matrix to store the outer product
+    result = []
+
+    # Calculate the outer product
+    for i in range(len(a)):
+        result.append([])
+        for j in range(len(b)):
+            result[i].append(a[i] * b[j])
+    return result
+
+u = [1, 3]
+v = [-1, 1]
+
+r = outer_product(u,v)
+print(v)

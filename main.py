@@ -110,18 +110,18 @@ def dot_product(a, b):
                             result[i][j][k] += a[i][j][l] * b[l][m][k]
         return result
 
+def inner_product(a, b):
+    return dot_product(a,b)
+
 # Example usage:
 rnd = MyRandom()
-a = rnd.random(2,2,2)
-b = rnd.random(2,2,2)
-c = dot_product(a,b)
+a = rnd.random(4,2)
+b = rnd.random(2,4)
+c = inner_product(a,b)
 
 print(a)
 print(b)
 print(c)
-def inner_product(a, b):
-    return
-
 
 def outer_product(a, b):
     # Check if both inputs are lists

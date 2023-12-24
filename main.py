@@ -277,14 +277,63 @@ def condition_number(a):
     result = norm_matrix * norm_inv_matrix
     return result
 
+def determinant(a):
+    # Check if the matrix is square
+    n = len(a)
+    if any(len(row) != n for row in a):
+        raise ValueError("Matrix must be square to compute its determinant.")
+    # Base case: if the matrix is 1x1, return the single element
+    if len(a) == 1:
+        return a[0][0]
+    # Base case: if the matrix is 2x2, return the determinant
+    if len(a) == 2:
+        return a[0][0] * a[1][1] - a[0][1] * a[1][0]
+    # Recursive case: expand along the first row
+    result = 0
+    for col in range(len(a)):
+        # Create a submatrix excluding the first row and the current column
+        submatrix = [row[:col] + row[col + 1:] for row in a[1:]]
+        # Recursively calculate the determinant of the submatrix
+        minor_det = determinant(submatrix)
+        # Add or subtract the minor's determinant, based on column index
+        result += a[0][col] * minor_det * (-1 if col % 2 else 1)
+    return result
+
+def matrix_rank(a):
+    # Copy the matrix to avoid altering the original
+    A = [row[:] for row in a]
+    rows, cols = len(A), len(A[0])
+    # Initialize rank
+    rank = 0
+    # Iterate over the columns
+    for col in range(cols):
+        # Make sure we have a non-zero entry in the current column
+        pivot_found = False
+        for r in range(rank, rows):
+            if A[r][col] != 0:
+                pivot_found = True
+                # Swap the current row with the row containing the pivot
+                A[rank], A[r] = A[r], A[rank]
+                # Normalize the pivot row
+                pivot = A[rank][col]
+                A[rank] = [element / pivot for element in A[rank]]
+                break
+        if not pivot_found:
+            continue
+        # Eliminate all non-zero entries in this column below the pivot
+        for r in range(rank + 1, rows):
+            factor = A[r][col]
+            A[r] = [a - factor * b for a, b in zip(A[r], A[rank])]
+        rank += 1
+    return rank
+
 # Example usage:
 rnd = MyRandom()
-a = rnd.random(3,3)
-cond_num = condition_number(a)
+a = rnd.random(5,3)
+b = matrix_rank(a)
 import numpy as np
-cond_num2 = np.linalg.cond(a, 'fro')
-print('a = ',a)
-print("cond_num = ", cond_num)
-print("cond_num2 = ", cond_num2)
-
+b2 = np.linalg.matrix_rank(a)
+print("a = ", a)
+print("b = ", b)
+print("b2 = ", b2)
 

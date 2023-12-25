@@ -337,3 +337,36 @@ print("a = ", a)
 print("b = ", b)
 print("b2 = ", b2)
 
+def eigenvalue_and_right_eigenvectors(a):
+    # Ensure the array is square
+    if not all(len(row) == len(a) for row in a):
+        raise ValueError("The matrix must be square.")
+    n = len(a)
+    # Step 1: Initialize a random vector (v)
+    v = [1] * n
+    for _ in range(100):
+        # Step 2: Multiply by matrix
+        w = [sum(a[j][i] * v[i] for i in range(n)) for j in range(n)]
+        # Step 3: Calculate the norm of the new vector
+        norm_w = sum(wi ** 2 for wi in w) ** 0.5
+        # Step 4: Normalize the new vector
+        v = [wi / norm_w for wi in w]
+    # Step 5: Rayleigh quotient for an approximation of the dominant eigenvalue
+    eigenvalue = sum(a[i][j] * v[j] for i in range(n) for j in range(n)) / sum(vi ** 2 for vi in v)
+    return eigenvalue, v
+
+# Example usage
+matrix = [
+    [4, 1],
+    [2, 3]
+]
+eigenvalue, eigenvector = eigenvalue_and_right_eigenvectors(matrix)
+print("Approximate dominant eigenvalue:", eigenvalue)
+print("Approximate eigenvector:", eigenvector)
+# Compute the eigenvalues and right eigenvectors
+eigenvalues, eigenvectors = np.linalg.eig(matrix)
+
+print("Eigenvalues:", eigenvalues)
+print("Eigenvectors:")
+print(eigenvectors)
+

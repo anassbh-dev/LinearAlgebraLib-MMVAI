@@ -306,35 +306,6 @@ def determinant(a):
         result += a[0][col] * minor_det * (-1 if col % 2 else 1)
     return result
 
-def matrix_rank(a):
-    # Copy the matrix to avoid altering the original
-    A = [row[:] for row in a]
-    rows, cols = len(A), len(A[0])
-    # Initialize rank
-    result = 0
-    # Iterate over the columns
-    for col in range(cols):
-        # Make sure we have a non-zero entry in the current column
-        pivot_found = False
-        for r in range(result, rows):
-            if A[r][col] != 0:
-                pivot_found = True
-                # Swap the current row with the row containing the pivot
-                A[result], A[r] = A[r], A[result]
-                # Normalize the pivot row
-                pivot = A[result][col]
-                A[result] = [element / pivot for element in A[result]]
-                break
-        if not pivot_found:
-            continue
-        # Eliminate all non-zero entries in this column below the pivot
-        for r in range(result + 1, rows):
-            factor = A[r][col]
-            A[r] = [a - factor * b for a, b in zip(A[r], A[result])]
-        result += 1
-    return result
-
-
 def calculate_eigen(matrix):
     if len(matrix) != 2 or len(matrix[0]) != 2:
         return "Error: This function only calculates 2x2 square arrays"

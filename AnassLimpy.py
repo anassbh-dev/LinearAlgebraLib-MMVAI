@@ -1,33 +1,33 @@
 import time
 
-class MyRandom:
-    def __init__(self, seed=time.time()):    # Initializer or constructor for the MyRandom class
-        # Set the initial seed value for the random number generator
-        self.seed = seed
-        # Constants used for the generator algorithm
-        self.a = 15
-        self.b = 18
-        self.c = 47
+import time
 
-    def rand(self):    # Method to generate a pseudo-random number
-        # Update the seed and ensure the result is an integer
+class MyRandom:
+    def __init__(self, seed=time.time()):
+        self.seed = seed * 5
+        self.a = 23
+        self.b = 43
+        self.c = 34
+
+    def rand(self, min_val=0, max_val=None):
+        # Generate a pseudo-random number in the range [0, self.c)
         self.seed = int((self.a * self.seed + self.b) % self.c)
-        # Return the new pseudo-random number
+        # Scale and translate the number to the desired range [min_val, max_val)
+        if max_val is not None:
+            return min_val + self.seed % (max_val - min_val)
         return self.seed
 
-    def random(self, *args):   # Method to generate a multi-dimensional array filled with random numbers
-        # If no dimensions are provided, raise an error
+    def random(self, *args, min_val=0, max_val=None):
         if len(args) == 0:
             raise ValueError("At least one dimension size is required")
-        # Call the generate_array method with the provided dimensions
-        return self.generate_array(args)
+        # Include the range in the call to generate_array
+        return self.generate_array(args, min_val=min_val, max_val=max_val)
 
-    def generate_array(self, dimensions, depth=0):    # Recursive method to generate an array of given dimensions
-        # If the current depth equals the number of dimensions, return a random number
+    def generate_array(self, dimensions, depth=0, min_val=0, max_val=None):
         if depth == len(dimensions):
-            return self.rand()
-        # Otherwise, build the next dimension recursively
-        return [self.generate_array(dimensions, depth + 1) for _ in range(dimensions[depth])]
+            return self.rand(min_val=min_val, max_val=max_val)
+        # Include the range in the recursive call to generate_array
+        return [self.generate_array(dimensions, depth + 1, min_val=min_val, max_val=max_val) for _ in range(dimensions[depth])]
 
 # Usage:
 # rnd = MyRandom()  # Create an instance of MyRandom
@@ -110,6 +110,69 @@ def dot_product(a, b):
                             result[i][j][k] += a[i][j][l] * b[l][m][k]
         return result
 
+def element_wise_addition(matrix1, matrix2):
+    # Check if both matrices have the same dimensions
+    if len(matrix1) != len(matrix2) or any(len(row1) != len(row2) for row1, row2 in zip(matrix1, matrix2)):
+        raise ValueError("Both matrices must have the same dimensions.")
+
+    # Initialize the result matrix with zeros
+    result = [[0 for _ in range(len(matrix1[0]))] for _ in range(len(matrix1))]
+
+    # Perform element-wise addition
+    for i in range(len(matrix1)):
+        for j in range(len(matrix1[0])):
+            result[i][j] = matrix1[i][j] + matrix2[i][j]
+
+    return result
+
+def element_wise_subtraction(matrix1, matrix2):
+    # Check if both matrices have the same dimensions
+    if len(matrix1) != len(matrix2) or any(len(row1) != len(row2) for row1, row2 in zip(matrix1, matrix2)):
+        raise ValueError("Both matrices must have the same dimensions.")
+
+    # Initialize the result matrix with zeros
+    result = [[0 for _ in range(len(matrix1[0]))] for _ in range(len(matrix1))]
+
+    # Perform element-wise subtraction
+    for i in range(len(matrix1)):
+        for j in range(len(matrix1[0])):
+            result[i][j] = matrix1[i][j] - matrix2[i][j]
+
+    return result
+
+def element_wise_mutiplication(matrix1, matrix2):
+    # Check if both matrices have the same dimensions
+    if len(matrix1) != len(matrix2) or any(len(row1) != len(row2) for row1, row2 in zip(matrix1, matrix2)):
+        raise ValueError("Both matrices must have the same dimensions.")
+
+    # Initialize the result matrix with zeros
+    result = [[0 for _ in range(len(matrix1[0]))] for _ in range(len(matrix1))]
+
+    # Perform element-wise subtraction
+    for i in range(len(matrix1)):
+        for j in range(len(matrix1[0])):
+            result[i][j] = matrix1[i][j] * matrix2[i][j]
+
+    return result
+
+def element_wise_division(matrix1, matrix2):
+    # Check if both matrices have the same dimensions
+    if len(matrix1) != len(matrix2) or any(len(row1) != len(row2) for row1, row2 in zip(matrix1, matrix2)):
+        raise ValueError("Both matrices must have the same dimensions.")
+
+    # Initialize the result matrix with zeros
+    result = [[0 for _ in range(len(matrix1[0]))] for _ in range(len(matrix1))]
+
+    # Perform element-wise subtraction
+    for i in range(len(matrix1)):
+        for j in range(len(matrix1[0])):
+            result[i][j] = matrix1[i][j] / matrix2[i][j]
+
+    return result
+
+def reshape2d_to_1d(a):
+    # Flatten the 2D array into a 1D array using list comprehension
+    return [element for row in a for element in row]
 def inner_product(a, b):
     return dot_product(a,b)
 
@@ -284,6 +347,10 @@ def condition_number(a):
     result = norm_matrix * norm_inv_matrix
     return result
 
+def mean(a):
+    if not isinstance(a, list):
+        raise ValueError("input must be a vector")
+    return
 def determinant(a):
     # Check if the matrix is square
     n = len(a)

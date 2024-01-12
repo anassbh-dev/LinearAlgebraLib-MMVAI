@@ -132,10 +132,17 @@ def outer_product(a, b):
             result[i].append(a[i] * b[j])
     return result
 
+def matrix_multiplication(a, b):
+    # Check if both inputs are vectors or matrix (1D or 2D arrays)
+    if (isinstance(a[0], (int, float)) and isinstance(b[0], (int, float))) or (isinstance(a[0], list) and isinstance(b[0], list)):
+        return dot_product(a, b)
+    # If one of the arrays is 3D, matrix multiplication is not defined
+    else:
+        raise ValueError("Matrix multiplication is not defined for tensors (3D arrays or higher).")
 
 def tensor_dot_product_along_axes(tensor1, tensor2, axis1, axis2):
     # Check if the dimensions are correct for dot product along specified axes
-    if len(tensor1[0][0]) != len(tensor2):
+    if len(tensor1[axis1]) != len(tensor2[axis2]):
         raise ValueError("Dimensions do not match for the specified axes.")
 
     # Calculate the size of the resulting tensor
@@ -152,7 +159,7 @@ def tensor_dot_product_along_axes(tensor1, tensor2, axis1, axis2):
             for k in range(len(result[0][0])):
                 # Initialize the sum for this element
                 dot_product_sum = 0
-                for l in range(len(tensor1[0][0])):
+                for l in range(len(tensor1[0][axis1])):
                     dot_product_sum += tensor1[i][j][l] * tensor2[l][j][k]
                 result[i][j][k] = dot_product_sum
 
@@ -327,46 +334,44 @@ def matrix_rank(a):
         result += 1
     return result
 
-# Example usage:
-rnd = MyRandom()
-a = rnd.random(5,4)
-b = matrix_rank(a)
-import numpy as np
-b2 = np.linalg.matrix_rank(a)
-print("a = ", a)
-print("b = ", b)
-print("b2 = ", b2)
 
-def eigenvalue_and_right_eigenvectors(a):
-    # Ensure the array is square
-    if not all(len(row) == len(a) for row in a):
-        raise ValueError("The matrix must be square.")
-    n = len(a)
-    # Step 1: Initialize a random vector (v)
-    v = [1] * n
-    for _ in range(100):
-        # Step 2: Multiply by matrix
-        w = [sum(a[j][i] * v[i] for i in range(n)) for j in range(n)]
-        # Step 3: Calculate the norm of the new vector
-        norm_w = sum(wi ** 2 for wi in w) ** 0.5
-        # Step 4: Normalize the new vector
-        v = [wi / norm_w for wi in w]
-    # Step 5: Rayleigh quotient for an approximation of the dominant eigenvalue
-    eigenvalue = sum(a[i][j] * v[j] for i in range(n) for j in range(n)) / sum(vi ** 2 for vi in v)
-    return eigenvalue, v
+def calculate_eigen(matrix):
+    if len(matrix) != 2 or len(matrix[0]) != 2:
+        return "Error: This function only calculates 2x2 square arrays"
 
-# Example usage
-matrix = [
-    [4, 1],
-    [2, 3]
-]
-eigenvalue, eigenvector = eigenvalue_and_right_eigenvectors(matrix)
-print("Approximate dominant eigenvalue:", eigenvalue)
-print("Approximate eigenvector:", eigenvector)
-# Compute the eigenvalues and right eigenvectors
-eigenvalues, eigenvectors = np.linalg.eig(matrix)
+    a, b, c, d = matrix[0][0], matrix[0][1], matrix[1][0], matrix[1][1]
+    trace = a + d
+    determinant = a * d - b * c
+    mean = trace / 2
+    product = determinant
 
-print("Eigenvalues:", eigenvalues)
-print("Eigenvectors:")
-print(eigenvectors)
+    # Check for complex eigenvalues
+    discriminant = mean ** 2 - product
+    if discriminant < 0:
+        return (f"The eigenvalues are complex: λ1, λ2 = {mean} ± √{discriminant}, " +
+                "and there are no eigenvectors for complex eigenvalues in this function.")
+
+    # Eigenvalues
+    sqrt_discriminant = discriminant ** 0.5
+    lambda1 = mean + sqrt_discriminant
+    lambda2 = mean - sqrt_discriminant
+
+    # Check for cases where there are no eigenvectors
+    if b == 0 and c == 0:
+        # It's a diagonal matrix, eigenvectors are along the axes
+        eigenvectors = [[1, 0], [0, 1]]
+    elif b == 0:
+        eigenvectors = [[1, 0], [d - lambda2, c]]
+    elif c == 0:
+        eigenvectors = [[a - lambda2, b], [0, 1]]
+    else:
+        # Regular case
+        eigenvectors = [[b, lambda1 - a], [lambda1 - d, c]]
+        # Normalize eigenvectors (not always necessary, but usually expected)
+        for vec in eigenvectors:
+            norm = (vec[0] ** 2 + vec[1] ** 2) ** 0.5
+            vec[0] /= norm
+            vec[1] /= norm
+
+    return {'eigenvalues': (lambda1, lambda2), 'eigenvectors': eigenvectors}
 
